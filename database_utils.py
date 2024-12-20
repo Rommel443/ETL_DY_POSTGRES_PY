@@ -39,3 +39,5 @@ def insert_data_to_postgres(df, table_name, config):
     
     cursor.close()
     conn.close()
+
+    #prueba git
