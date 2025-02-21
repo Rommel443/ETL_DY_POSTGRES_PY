@@ -1,10 +1,10 @@
 # Configuración para SQL Server
 SQL_SERVER_CONFIG = {
     'driver': 'SQL Server',
-    'server': 'spartan-srv-nam-d365opsprod-17260f67d388.database.windows.net',
-    'database': 'db_d365opsprod_megaproferte_ax_20241218_11304089_83b1',
-    'user': 'JIT-rommel-wpw9vzns',
-    'password': 'fdGIG_njord1FU0-LVf0dRM1Eh2ZMlldG-4NpHG0l7ZTHKbvoXmQn36PifkOIaNVyEj4VGT_cEBuVw-lN5u-Y0ijVf'
+    'server': 'spartan-srv-nam-d365opsprod-f641796aaccb.database.windows.net',
+    'database': 'db_d365opsprod_megaproferte_ax_20250213_10535705_955a',
+    'user': 'JIT-rommel-z963r78j',
+    'password': '6b0jco2q2d9pdmFbCH3VUp-UNBCeMcyFAb_RZ_SptsrRuFayEVtSDuCnBdiBChrv6jNeFr-Bu9ALA1YiAo8thO9t1R'
 }
 
 # Configuración para PostgreSQL
