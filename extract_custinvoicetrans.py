@@ -75,17 +75,20 @@ def process_custinvoicetrans():
 
         # Construir la consulta SQL para extraer registros nuevos y modificados
         query = """
-        SELECT top 10
+        SELECT 
             SALESID, INVOICEID, INVENTDIMID, INVENTQTY, INVENTTRANSID,
             INVOICEDATE, ITEMID, LINEAMOUNT, PRICEUNIT, QTY,
             SALESPRICE, LINEDISC, LINEPERCENT, NUMBERSEQUENCEGROUP,
-            ORIGSALESID, SALESUNIT, MODIFIEDDATETIME, CREATEDDATETIME, RECID
+            ORIGSALESID, SALESUNIT, MODIFIEDDATETIME, CREATEDDATETIME, RECID, DATAAREAID
         FROM CUSTINVOICETRANS
         WHERE INVOICEID <> '*'
-          AND LEN(SALESID) > 0
+          AND LEFT(INVOICEID,3) NOT IN ('PR-', '#56')
+          AND convert(date, CUSTINVOICETRANS.INVOICEDATE) >= '2022-04-01' 
+          AND convert(date, CUSTINVOICETRANS.INVOICEDATE) <= '2022-04-30'
+          
         """
         if last_recid:
-            query += f" AND (RECID > {last_recid} OR MODIFIEDDATETIME > '{last_modifieddatetime}')"
+            query += f" AND (RECID > {last_recid} OR MODIFIEDDATETIME > '{last_modifieddatetime}') "
         
         logging.info(f"Consulta SQL para extracción incremental: {query}")
 

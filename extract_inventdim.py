@@ -77,8 +77,8 @@ def process_inventdim():
         # Construir la consulta SQL para extraer registros nuevos y modificados
         query = """
         SELECT top 10 
-        INVENTDIMID, INVENTLOCATIONID, MODIFIEDDATETIME, CREATEDDATETIME, RECID 
-        FROM INVENTDIM
+        INVENTDIMID, INVENTLOCATIONID, MODIFIEDDATETIME, CREATEDDATETIME, RECID, DATAAREAID
+        FROM INVENTDIM 
         """
         if last_recid:
             query += f" WHERE (RECID > {last_recid} OR MODIFIEDDATETIME > '{last_modifieddatetime}')"
