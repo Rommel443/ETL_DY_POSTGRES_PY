@@ -18,12 +18,12 @@ def get_last_recid_and_modifieddatetime_from_postgres(config):
         )
         engine = create_engine(connection_string)
         with engine.connect() as connection:
-            query = text("SELECT MAX(recid), MAX(modifieddatetime) FROM custinvoicetrans;")
+            query = text("SELECT MAX(recid), MAX(modifieddatetime) FROM custinvoicejour;")
             result = connection.execute(query).fetchone()
             last_recid, last_modifieddatetime = result
 
         if last_recid is None:
-            logging.info("No hay registros en la tabla custinvoicetrans. Se insertarán todos los datos.")
+            logging.info("No hay registros en la tabla custinvoicejour. Se insertarán todos los datos.")
             return None, None
         else:
             logging.info(f"Último RECID en PostgreSQL: {last_recid}")
@@ -66,9 +66,9 @@ def upsert_data_to_postgres(df, table_name, config):
         logging.error(f"Error en el upsert: {e}")
         raise
 
-def process_custinvoicetrans():
+def process_custinvoicejour():
     try:
-        logging.info("Iniciando extracción incremental de CUSTINVOICETRANS...")
+        logging.info("Iniciando extracción incremental de custinvoicejour...")
 
         # Obtener el último RECID y MODIFIEDDATETIME insertado en PostgreSQL
         last_recid, last_modifieddatetime = get_last_recid_and_modifieddatetime_from_postgres(POSTGRES_CONFIG)
@@ -76,13 +76,12 @@ def process_custinvoicetrans():
         # Construir la consulta SQL para extraer registros nuevos y modificados
         query = """
         SELECT 
-            SALESID, INVOICEID, INVENTDIMID, INVENTQTY, INVENTTRANSID,
-            INVOICEDATE, ITEMID, LINEAMOUNT, PRICEUNIT, QTY,
-            SALESPRICE, LINEDISC, LINEPERCENT, NUMBERSEQUENCEGROUP,
-            ORIGSALESID, SALESUNIT, PARENTRECID, MODIFIEDDATETIME, CREATEDDATETIME, RECID, DATAAREAID
-        FROM CUSTINVOICETRANS
+            INVOICEID, SALESID, SALESBALANCE, SUMTAX, INVOICEAMOUNT, QTY, SUMLINEDISC, VOLUME, WEIGHT,
+            LEDGERVOUCHER, INVOICEDATE, NUMBERSEQUENCEGROUP, INVOICEACCOUNT, PAYMENT, PAYMID, POSTINGPROFILE, SALESORIGINID,
+            SALESTYPE, TAXGROUP, APINVOICEIDPOS, APFACTURADORPOS, WORKERSALESTAKER,	MPWORKERSALESRESPONSIBLE,
+            MODIFIEDDATETIME,  CREATEDDATETIME, RECID, DATAAREAID   
+        FROM custinvoicejour
         WHERE INVOICEID <> '*'
-          AND LEFT(INVOICEID,3) NOT IN ('PR-', '#56')
          
           
         """
@@ -99,8 +98,8 @@ def process_custinvoicetrans():
 
         # Limpiar y cargar datos en PostgreSQL
         df = clean_dataframe(df)
-        upsert_data_to_postgres(df, "custinvoicetrans", POSTGRES_CONFIG)
+        upsert_data_to_postgres(df, "custinvoicejour", POSTGRES_CONFIG)
         logging.info("Proceso de carga incremental completado.")
     except Exception as e:
-        logging.error(f"Error en el proceso de CUSTINVOICETRANS: {e}")
+        logging.error(f"Error en el proceso de custinvoicejour: {e}")
         raise
